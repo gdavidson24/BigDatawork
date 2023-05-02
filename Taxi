@@ -1,0 +1,23 @@
+install.packages("dplyr")
+install.packages("arrow")
+library(dplyr)
+library(arrow)
+# Read in the Parquet file
+taxi_data <- arrow::read_parquet("yellow_tripdata_2016-01.parquet")
+# Filter the data to include only trips with a fare amount greater than $50
+high_fare_trips <- taxi_data %>%
+  filter(fare_amount > 50)
+# Select only the columns for pickup and dropoff location IDs, and the fare amount
+selected_cols <- taxi_data %>%
+  select(PULocationID, DOLocationID, fare_amount)
+# Calculate the average trip distance and fare amount for each pickup location
+pickup_summary <- taxi_data %>%
+  group_by(PULocationID) %>%
+  summarize(avg_distance = mean(trip_distance), avg_fare = mean(fare_amount))
+# Sort the data by pickup location ID in descending order
+sorted_data <- taxi_data %>%
+  arrange(desc(PULocationID))
+# Add a new column for tip percentage
+taxi_data <- taxi_data %>%
+  mutate(tip_percent = tip_amount / (fare_amount + extra + mta_tax + tip_amount) * 100)
+
