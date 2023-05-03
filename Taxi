@@ -1,7 +1,9 @@
 install.packages("dplyr")
 install.packages("arrow")
+install.packages("tidyverse")
 library(dplyr)
 library(arrow)
+library(tidyverse)
 # Read in the Parquet file
 taxi_data <- arrow::read_parquet("yellow_tripdata_2016-01.parquet")
 # Filter the data to include only trips with a fare amount greater than $50
